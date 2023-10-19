@@ -52,18 +52,6 @@ class Tetris{
 			}
 			let i = i + 1;
 		}
-		let gameboard[4] = 1;
-		let gameboard[8] = 1;
-		let gameboard[6] = 1;
-		let gameboard[10] = 1;
-		let gameboard[18] = 1;
-		let gameboard[18] = 1;
-		let gameboard[25] = 1;
-		let gameboard[36] = 1;
-		let gameboard[54] = 1;
-		let gameboard[100] = 1;
-		let gameboard[101] = 1;
-		let gameboard[102] = 1;
 
 
 		do Random.setSeed(7);
