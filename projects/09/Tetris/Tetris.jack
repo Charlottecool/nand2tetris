@@ -1,0 +1,451 @@
+class Tetris{
+	field int score; //
+
+	field int game_left; // distance from the Tetris's frame left side to screen's left side
+	field int game_top; // distance from the Tetris's frame top side to screen's top side
+	field int game_width; // width of Tetris's frame 
+	field int game_height; // height of Tetris's frame 
+
+	field int block_size; // Tetris's block size
+	field int block0_x; // One of Tetris's blocks
+	field int block0_y; // One of Tetris's blocks
+	field int block1_x; // One of Tetris's blocks
+	field int block1_y; // One of Tetris's blocks
+	field int block2_x; // One of Tetris's blocks
+	field int block2_y; // One of Tetris's blocks 
+	field int block3_x; // One of Tetris's blocks
+	field int block3_y; // One of Tetris's blocks
+
+	field int direction; // the square's current direction: 
+                        // 3=left, 4=right
+
+    field int current_x, current_y; // location of current block
+
+    field Array gameboard;
+    field int f_height; 
+    field int f_width; 
+
+	constructor Tetris new(){
+		var int i;
+		var int j;
+	
+		let f_height = 22; 
+    	let f_width = 10;
+		let score = 0;
+		let game_left = 200;
+		let game_top = 8;
+		let game_width = 101;
+		let game_height = 241;
+		let block_size = 10;
+		let current_x = 4;
+		let current_y = 0;
+		
+		let gameboard = Array.new(f_height*f_width);
+		
+		let i = 0;
+		while(i < f_height){
+			
+			let j = 0;
+			while(j < f_width){
+				let gameboard[(i*f_width) + j] = 0;
+				let j = j + 1;
+			}
+			let i = i + 1;
+		}
+		let gameboard[4] = 1;
+		let gameboard[8] = 1;
+		let gameboard[6] = 1;
+		let gameboard[10] = 1;
+		let gameboard[18] = 1;
+		let gameboard[18] = 1;
+		let gameboard[25] = 1;
+		let gameboard[36] = 1;
+		let gameboard[54] = 1;
+		let gameboard[100] = 1;
+		let gameboard[101] = 1;
+		let gameboard[102] = 1;
+
+
+		do Random.setSeed(7);
+		return this;
+
+	}
+
+	/** Disposes this tetris. */
+    method void dispose() {
+    	do Memory.deAlloc(this);
+    	return;
+    }
+
+	method void drawFrame(){
+		do Screen.drawRectangle(game_left - 1, game_top - 1, game_left + game_width + 1, game_top + game_height + 1);
+        do Screen.setColor(false); // draw innner frame with white
+        do Screen.drawRectangle(game_left, game_top, game_left + game_width, game_top + game_height);
+        do Screen.setColor(true); // draw outer frame with black
+        return;
+	}
+	
+	method void draw_prevblocks(){
+		var int i;
+		var int j;
+
+		let i = 0;
+		while(i < f_height){
+			
+			let j = 0;
+			while(j < f_width){
+				if(gameboard[(i*f_width) + j] = 1){
+					do drawBlock(j,i);
+				}
+				let j = j + 1;
+			}
+			let i = i + 1;
+		}
+		return;
+	}
+	
+	method void printScore(){
+		do Output.moveCursor(0,0);
+		do Output.printString("Score:");
+        do Output.printInt(score);
+        return;
+	}
+
+	method void drawBlock(int x, int y){
+		var int x1, y1;
+		let x1 = game_left + (block_size*x);
+		let y1 = game_top + (block_size*y);
+		do Screen.drawRectangle(x1+2, y1+2, x1+block_size, y1+block_size);
+		return;
+	}
+
+	method void set_I1(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;
+		let block2_x = 2;
+		let block2_y = 0;
+		let block3_x = 3;
+		let block3_y = 0;
+		return;
+	}
+
+	method void set_I2(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 0;
+		let block2_y = 2;
+		let block3_x = 0;
+		let block3_y = 3;
+		return;
+	}
+
+	method void set_O(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 0;
+		let block3_x = 1;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_T1(){
+		let block0_x = 0;
+		let block0_y = 1;
+		let block1_x = 1;
+		let block1_y = 0;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_T2(){
+		let block0_x = 1;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_T3(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 0;
+		return;
+	}
+
+	method void set_T4(){
+		let block0_x = 1;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 1;
+		let block3_y = 2;
+		return;
+	}
+
+	method void set_L1(){
+		let block0_x = 0;
+		let block0_y = 1;
+		let block1_x = 1;
+		let block1_y = 1;
+		let block2_x = 2;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 0;
+		return;
+	}
+
+	method void set_L2(){
+		let block0_x = 1;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 2;
+		let block3_x = 0;
+		let block3_y = 2;
+		return;
+	}
+
+	method void set_L3(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;
+		let block2_x = 0;
+		let block2_y = 1;
+		let block3_x = 0;
+		let block3_y = 2;
+		return;
+	}
+
+	method void set_L4(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_J1(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;		
+		let block2_x = 2;
+		let block2_y = 0;		
+		let block3_x = 0;
+		let block3_y = 1;	
+		return;
+	}
+
+	method void set_J2(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;		
+		let block2_x = 1;
+		let block2_y = 1;		
+		let block3_x = 1;
+		let block3_y = 2;	
+		return;
+	}
+
+	method void set_J3(){
+		let block0_x = 2;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;		
+		let block2_x = 1;
+		let block2_y = 1;		
+		let block3_x = 2;
+		let block3_y = 1;	
+		return;
+	}
+
+	method void set_J4(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;		
+		let block2_x = 0;
+		let block2_y = 2;		
+		let block3_x = 1;
+		let block3_y = 2;	
+		return;
+	}
+
+
+	method void set_S1(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 0;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 2;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_S2(){
+		let block0_x = 1;
+		let block0_y = 0;
+		let block1_x = 1;
+		let block1_y = 1;
+		let block2_x = 0;
+		let block2_y = 1;
+		let block3_x = 0;
+		let block3_y = 2;
+		return;
+	}
+
+	method void set_Z1(){
+		let block0_x = 1;
+		let block0_y = 0;
+		let block1_x = 2;
+		let block1_y = 0;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 0;
+		let block3_y = 1;
+		return;
+	}
+
+	method void set_Z2(){
+		let block0_x = 0;
+		let block0_y = 0;
+		let block1_x = 0;
+		let block1_y = 1;
+		let block2_x = 1;
+		let block2_y = 1;
+		let block3_x = 1;
+		let block3_y = 2;
+		return;
+	}
+
+	/** generate new piece from the top and check whether can drop. */
+	method void generate_piece(){
+		var int ra;
+		//generate random number 
+		let current_x = 4;
+		let current_y = 0;
+		let ra = Random.randRange(7);
+		//if chain pick blocks
+		if (ra = 0) {do set_I1(); }
+		if (ra = 1) {do set_O(); }
+		if (ra = 2) {do set_T1(); }
+		if (ra = 3) {do set_L1(); }
+		if (ra = 4) {do set_J1(); }
+		if (ra = 5) {do set_S1(); }
+		if (ra = 6) {do set_Z1(); }
+		return;
+	}
+
+	/** drop the block and piles and keypresses. */
+	method void drop_block(){
+		var char key;  // the key currently pressed by the user
+		while(current_y < 22){
+			let key = Keyboard.keyPressed();
+			
+			//if (key = 131) { do rotate(); }   // up arrow
+	        if (key = 130) { let current_x = current_x - 1; }   // left arrow
+	        if (key = 132) { let current_x = current_x + 1; }   // right arrow
+			if (current_y < 22){
+				let current_y = current_y + 1;	
+
+			}
+			do Screen.clearScreen();
+			do drawFrame();
+			do printScore();
+			do draw_prevblocks();
+			//let r = Random.randRange(18);
+			do draw_piece(current_x,current_y);
+			do Sys.wait(50);
+		}
+		return;
+	}
+
+	method void draw_piece(int x, int y){
+		do drawBlock(x+block0_x, y+block0_y);
+		do drawBlock(x+block1_x, y+block1_y);
+		do drawBlock(x+block2_x, y+block2_y);
+		do drawBlock(x+block3_x, y+block3_y);
+		return;
+	}
+
+	/** Moves the block down by 1 line. */
+	//method void drop_block() {            QUITED ONE
+	//	var int line_number;
+	//	let line_number = 0 ;
+	//	while (line_number < 23) {
+	//		do Screen.clearScreen();
+	//		do drawFrame();
+	//		do printScore();
+	//		do draw_piece(4,line_number);
+	//		let line_number = line_number + 1;
+	//		do Sys.wait(100);
+	//	}
+	//	return;
+	//}
+
+	/** Rotate the block. */
+	method void rotate(){
+		return;
+	}
+
+
+	/** randomly drop blocks. */
+	//method void random_drop(){
+	//
+	//}
+
+    /** Runs the game: handles the user's inputs and moves the block accordingly */
+    method void run() {
+      	var int r;
+      
+        var boolean exit;
+        let exit = false;
+
+        while (~exit) {
+        	do generate_piece();
+        	do drop_block();
+            
+
+            
+
+          
+        } 
+        return;
+    }
+
+	/** change the block shape. */
+	//method void change_shape(){
+
+	//}
+
+}
