@@ -2,7 +2,7 @@ function Tetris.new 2
 push constant 20
 call Memory.alloc 1
 pop pointer 0
-push constant 22
+push constant 24
 pop this 18
 push constant 10
 pop this 19
@@ -43,18 +43,12 @@ push this 19
 lt
 not
 if-goto WHILE_END1
-push local 0
-push this 19
-call Math.multiply 2
+push pointer 0
 push local 1
-add
-push this 17
-add
+push local 0
 push constant 0
+call Tetris.set_pos_state 4
 pop temp 0
-pop pointer 1
-push temp 0
-pop that 0
 push local 1
 push constant 1
 add
@@ -71,6 +65,36 @@ push constant 7
 call Random.setSeed 1
 pop temp 0
 push pointer 0
+return
+function Tetris.is_pos_filled 0
+push argument 0
+pop pointer 0
+push argument 2
+push this 19
+call Math.multiply 2
+push argument 1
+add
+push this 17
+add
+pop pointer 1
+push that 0
+return
+function Tetris.set_pos_state 0
+push argument 0
+pop pointer 0
+push argument 2
+push this 19
+call Math.multiply 2
+push argument 1
+add
+push this 17
+add
+push argument 3
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
 return
 function Tetris.dispose 0
 push argument 0
@@ -139,17 +163,10 @@ push this 19
 lt
 not
 if-goto WHILE_END1
-push local 0
-push this 19
-call Math.multiply 2
+push pointer 0
 push local 1
-add
-push this 17
-add
-pop pointer 1
-push that 0
-push constant 1
-eq
+push local 0
+call Tetris.is_pos_filled 3
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
@@ -713,13 +730,118 @@ pop temp 0
 label IF_FALSE6
 push constant 0
 return
+function Tetris.can_fall 3
+push argument 0
+pop pointer 0
+push this 18
+push constant 1
+sub
+pop local 2
+push this 15
+push this 6
+add
+pop local 0
+push this 16
+push this 7
+add
+push constant 1
+add
+pop local 1
+push local 1
+push local 2
+gt
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 15
+push this 8
+add
+pop local 0
+push this 16
+push this 9
+add
+push constant 1
+add
+pop local 1
+push local 1
+push local 2
+gt
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 15
+push this 10
+add
+pop local 0
+push this 16
+push this 11
+add
+push constant 1
+add
+pop local 1
+push local 1
+push local 2
+gt
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+or
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+return
+label IF_FALSE2
+push this 15
+push this 12
+add
+pop local 0
+push this 16
+push this 13
+add
+push constant 1
+add
+pop local 1
+push local 1
+push local 2
+gt
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+or
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 0
+return
+label IF_FALSE3
+push constant 0
+not
+return
 function Tetris.drop_block 1
 push argument 0
 pop pointer 0
 label WHILE_EXP0
-push this 16
-push constant 22
-lt
+push pointer 0
+call Tetris.can_fall 1
 not
 if-goto WHILE_END0
 call Keyboard.keyPressed 0
@@ -747,16 +869,9 @@ add
 pop this 15
 label IF_FALSE1
 push this 16
-push constant 22
-lt
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push this 16
 push constant 1
 add
 pop this 16
-label IF_FALSE2
 call Screen.clearScreen 0
 pop temp 0
 push pointer 0
@@ -773,11 +888,60 @@ push this 15
 push this 16
 call Tetris.draw_piece 3
 pop temp 0
-push constant 50
+push constant 600
 call Sys.wait 1
 pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
+push constant 0
+return
+function Tetris.save_block 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 15
+push this 6
+add
+push this 16
+push this 7
+add
+push constant 0
+not
+call Tetris.set_pos_state 4
+pop temp 0
+push pointer 0
+push this 15
+push this 8
+add
+push this 16
+push this 9
+add
+push constant 0
+not
+call Tetris.set_pos_state 4
+pop temp 0
+push pointer 0
+push this 15
+push this 10
+add
+push this 16
+push this 11
+add
+push constant 0
+not
+call Tetris.set_pos_state 4
+pop temp 0
+push pointer 0
+push this 15
+push this 12
+add
+push this 16
+push this 13
+add
+push constant 0
+not
+call Tetris.set_pos_state 4
+pop temp 0
 push constant 0
 return
 function Tetris.draw_piece 0
@@ -841,6 +1005,9 @@ call Tetris.generate_piece 1
 pop temp 0
 push pointer 0
 call Tetris.drop_block 1
+pop temp 0
+push pointer 0
+call Tetris.save_block 1
 pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
