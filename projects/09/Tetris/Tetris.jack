@@ -54,20 +54,17 @@ class Tetris{
 			let i = i + 1;
 		}
 
-
 		do Random.setSeed(7);
 		return this;
 
 	}
 
+	/** check (x,y) is T or F. */
 	method boolean is_pos_filled(int x, int y){
 		return gameboard[(y*f_width) + x];
-		//if (~gameboard[(y*f_width) + x]) {
-		//	return true;
-		//}
-		//return false;
 	}
 
+	/** based on the value put in, set the (x,y) to T or F. */ 
 	method void set_pos_state(int x, int y, boolean value){
 		let gameboard[(y*f_width) + x] = value;
 		return;
@@ -87,6 +84,7 @@ class Tetris{
         return;
 	}
 	
+	/** draw blocks which stop moving. */
 	method void draw_prevblocks(){
 		var int i;
 		var int j;
@@ -350,24 +348,6 @@ class Tetris{
 		return;
 	}
 
-	/** generate new piece from the top and check whether can drop. */
-	method void generate_piece(){
-		var int ra;
-		//generate random number 
-		let current_x = 4;
-		let current_y = 0;
-		let ra = Random.randRange(7);
-		//if chain pick blocks
-		if (ra = 0) {do set_I1(); }
-		if (ra = 1) {do set_O(); }
-		if (ra = 2) {do set_T1(); }
-		if (ra = 3) {do set_L1(); }
-		if (ra = 4) {do set_J1(); }
-		if (ra = 5) {do set_S1(); }
-		if (ra = 6) {do set_Z1(); }
-		return;
-	}
-
 	/** check if the block can fall. */
 	method boolean can_fall(){
 		var int x;
@@ -402,6 +382,114 @@ class Tetris{
 		return true;
 	}
 
+	/** generate new piece from the top and check whether can drop. */
+	method void generate_piece(){
+		var int ra;
+		//generate random number 
+		let current_x = 4;
+		let current_y = 0;
+		let ra = Random.randRange(7);
+		//if chain pick blocks
+		if (ra = 0) {do set_I1(); }
+		if (ra = 1) {do set_O(); }
+		if (ra = 2) {do set_T1(); }
+		if (ra = 3) {do set_L1(); }
+		if (ra = 4) {do set_J1(); }
+		if (ra = 5) {do set_S1(); }
+		if (ra = 6) {do set_Z1(); }
+		return;
+	}
+
+	/** check whether blocks can move to the left. */
+	method boolean can_movel(){
+		var int x;
+		var int y;
+		if ((block0_x + current_x) = 0){
+			return false;
+		}
+		if ((block1_x + current_x) = 0){
+			return false;
+		}
+		if ((block2_x + current_x) = 0){
+			return false;
+		}
+		if ((block3_x + current_x) = 0){
+			return false;
+		}
+		
+		// check left block 0
+		let x = current_x + block0_x - 1;
+		let y = current_y + block0_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check left block 1
+		let x = current_x + block1_x - 1;
+		let y = current_y + block1_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check left block 2
+		let x = current_x + block2_x - 1;
+		let y = current_y + block2_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check left block 3
+		let x = current_x + block3_x - 1;
+		let y = current_y + block3_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		return true;
+	}
+
+	/** check whether blocks can move to the right. */
+	method boolean can_mover(){
+		var int x;
+		var int y;
+
+		if ((block0_x + current_x) = (f_width - 1)){
+			return false;
+		}
+		if ((block1_x + current_x) = (f_width - 1)){
+			return false;
+		}
+		if ((block2_x + current_x) = (f_width - 1)){
+			return false;
+		}
+		if ((block3_x + current_x) = (f_width - 1)){
+			return false;
+		}
+
+		// check right block 0
+		let x = current_x + block0_x + 1;
+		let y = current_y + block0_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check right block 1
+		let x = current_x + block1_x + 1;
+		let y = current_y + block1_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check right block 2
+		let x = current_x + block2_x + 1;
+		let y = current_y + block2_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+		// check right block 3
+		let x = current_x + block3_x + 1;
+		let y = current_y + block3_y;
+		if (is_pos_filled(x,y)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/** drop the block and piles and keypresses. */
 	method void drop_block(){
 		var char key;  // the key currently pressed by the user
@@ -409,19 +497,18 @@ class Tetris{
 			let key = Keyboard.keyPressed();
 			
 			//if (key = 131) { do rotate(); }   // up arrow
-	        if (key = 130) { let current_x = current_x - 1; }   // left arrow
-	        if (key = 132) { let current_x = current_x + 1; }   // right arrow
+	        if ((key = 130) & can_movel()) { let current_x = current_x - 1; }   // left arrow
+	        if ((key = 132) & can_mover()) { let current_x = current_x + 1; }   // right arrow
 			
 			let current_y = current_y + 1;	
 
-			
 			do Screen.clearScreen();
 			do drawFrame();
 			do printScore();
 			do draw_prevblocks();
 			//let r = Random.randRange(18);
 			do draw_piece(current_x,current_y);
-			do Sys.wait(600);
+			do Sys.wait(200);
 		}
 		return;
 	}
@@ -434,6 +521,7 @@ class Tetris{
 		return;
 	}
 
+	/** draw the moving blocks. */
 	method void draw_piece(int x, int y){
 		do drawBlock(x+block0_x, y+block0_y);
 		do drawBlock(x+block1_x, y+block1_y);
@@ -447,12 +535,6 @@ class Tetris{
 	method void rotate(){
 		return;
 	}
-
-
-	/** randomly drop blocks. */
-	//method void random_drop(){
-	//
-	//}
 
     /** Runs the game: handles the user's inputs and moves the block accordingly */
     method void run() {
@@ -469,10 +551,4 @@ class Tetris{
         } 
         return;
     }
-
-	/** change the block shape. */
-	//method void change_shape(){
-
-	//}
-
 }

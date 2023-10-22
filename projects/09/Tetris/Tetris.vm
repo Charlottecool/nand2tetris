@@ -648,88 +648,6 @@ push constant 2
 pop this 13
 push constant 0
 return
-function Tetris.generate_piece 1
-push argument 0
-pop pointer 0
-push constant 4
-pop this 15
-push constant 0
-pop this 16
-push constant 7
-call Random.randRange 1
-pop local 0
-push local 0
-push constant 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push pointer 0
-call Tetris.set_I1 1
-pop temp 0
-label IF_FALSE0
-push local 0
-push constant 1
-eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push pointer 0
-call Tetris.set_O 1
-pop temp 0
-label IF_FALSE1
-push local 0
-push constant 2
-eq
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push pointer 0
-call Tetris.set_T1 1
-pop temp 0
-label IF_FALSE2
-push local 0
-push constant 3
-eq
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
-push pointer 0
-call Tetris.set_L1 1
-pop temp 0
-label IF_FALSE3
-push local 0
-push constant 4
-eq
-if-goto IF_TRUE4
-goto IF_FALSE4
-label IF_TRUE4
-push pointer 0
-call Tetris.set_J1 1
-pop temp 0
-label IF_FALSE4
-push local 0
-push constant 5
-eq
-if-goto IF_TRUE5
-goto IF_FALSE5
-label IF_TRUE5
-push pointer 0
-call Tetris.set_S1 1
-pop temp 0
-label IF_FALSE5
-push local 0
-push constant 6
-eq
-if-goto IF_TRUE6
-goto IF_FALSE6
-label IF_TRUE6
-push pointer 0
-call Tetris.set_Z1 1
-pop temp 0
-label IF_FALSE6
-push constant 0
-return
 function Tetris.can_fall 3
 push argument 0
 pop pointer 0
@@ -836,6 +754,356 @@ label IF_FALSE3
 push constant 0
 not
 return
+function Tetris.generate_piece 1
+push argument 0
+pop pointer 0
+push constant 4
+pop this 15
+push constant 0
+pop this 16
+push constant 7
+call Random.randRange 1
+pop local 0
+push local 0
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Tetris.set_I1 1
+pop temp 0
+label IF_FALSE0
+push local 0
+push constant 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Tetris.set_O 1
+pop temp 0
+label IF_FALSE1
+push local 0
+push constant 2
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+call Tetris.set_T1 1
+pop temp 0
+label IF_FALSE2
+push local 0
+push constant 3
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+call Tetris.set_L1 1
+pop temp 0
+label IF_FALSE3
+push local 0
+push constant 4
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push pointer 0
+call Tetris.set_J1 1
+pop temp 0
+label IF_FALSE4
+push local 0
+push constant 5
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push pointer 0
+call Tetris.set_S1 1
+pop temp 0
+label IF_FALSE5
+push local 0
+push constant 6
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push pointer 0
+call Tetris.set_Z1 1
+pop temp 0
+label IF_FALSE6
+push constant 0
+return
+function Tetris.can_movel 2
+push argument 0
+pop pointer 0
+push this 6
+push this 15
+add
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 8
+push this 15
+add
+push constant 0
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 10
+push this 15
+add
+push constant 0
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+return
+label IF_FALSE2
+push this 12
+push this 15
+add
+push constant 0
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 0
+return
+label IF_FALSE3
+push this 15
+push this 6
+add
+push constant 1
+sub
+pop local 0
+push this 16
+push this 7
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+return
+label IF_FALSE4
+push this 15
+push this 8
+add
+push constant 1
+sub
+pop local 0
+push this 16
+push this 9
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 0
+return
+label IF_FALSE5
+push this 15
+push this 10
+add
+push constant 1
+sub
+pop local 0
+push this 16
+push this 11
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 0
+return
+label IF_FALSE6
+push this 15
+push this 12
+add
+push constant 1
+sub
+pop local 0
+push this 16
+push this 13
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 0
+return
+label IF_FALSE7
+push constant 0
+not
+return
+function Tetris.can_mover 2
+push argument 0
+pop pointer 0
+push this 6
+push this 15
+add
+push this 19
+push constant 1
+sub
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 8
+push this 15
+add
+push this 19
+push constant 1
+sub
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 10
+push this 15
+add
+push this 19
+push constant 1
+sub
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+return
+label IF_FALSE2
+push this 12
+push this 15
+add
+push this 19
+push constant 1
+sub
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 0
+return
+label IF_FALSE3
+push this 15
+push this 6
+add
+push constant 1
+add
+pop local 0
+push this 16
+push this 7
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+return
+label IF_FALSE4
+push this 15
+push this 8
+add
+push constant 1
+add
+pop local 0
+push this 16
+push this 9
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 0
+return
+label IF_FALSE5
+push this 15
+push this 10
+add
+push constant 1
+add
+pop local 0
+push this 16
+push this 11
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 0
+return
+label IF_FALSE6
+push this 15
+push this 12
+add
+push constant 1
+add
+pop local 0
+push this 16
+push this 13
+add
+pop local 1
+push pointer 0
+push local 0
+push local 1
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 0
+return
+label IF_FALSE7
+push constant 0
+not
+return
 function Tetris.drop_block 1
 push argument 0
 pop pointer 0
@@ -849,6 +1117,9 @@ pop local 0
 push local 0
 push constant 130
 eq
+push pointer 0
+call Tetris.can_movel 1
+and
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
@@ -860,6 +1131,9 @@ label IF_FALSE0
 push local 0
 push constant 132
 eq
+push pointer 0
+call Tetris.can_mover 1
+and
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
@@ -888,7 +1162,7 @@ push this 15
 push this 16
 call Tetris.draw_piece 3
 pop temp 0
-push constant 600
+push constant 200
 call Sys.wait 1
 pop temp 0
 goto WHILE_EXP0
