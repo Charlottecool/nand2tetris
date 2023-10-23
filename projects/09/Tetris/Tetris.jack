@@ -124,13 +124,13 @@ class Tetris{
 	method void set_I(){
 		let rotation_offset_2x = 3;
 		let block0_x = 0;
-		let block0_y = 0;
+		let block0_y = 1;
 		let block1_x = 1;
-		let block1_y = 0;
+		let block1_y = 1;
 		let block2_x = 2;
-		let block2_y = 0;
+		let block2_y = 1;
 		let block3_x = 3;
-		let block3_y = 0;
+		let block3_y = 1;
 		return;
 	}
 
