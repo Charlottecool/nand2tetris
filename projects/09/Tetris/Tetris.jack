@@ -25,6 +25,8 @@ class Tetris{
     field int f_height; 
     field int f_width; 
 
+    field int rotation_offset_2x;
+
 	constructor Tetris new(){
 		var int i;
 		var int j;
@@ -119,7 +121,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_I1(){
+	method void set_I(){
+		let rotation_offset_2x = 3;
 		let block0_x = 0;
 		let block0_y = 0;
 		let block1_x = 1;
@@ -131,19 +134,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_I2(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;
-		let block2_x = 0;
-		let block2_y = 2;
-		let block3_x = 0;
-		let block3_y = 3;
-		return;
-	}
-
 	method void set_O(){
+		let rotation_offset_2x = 1;
 		let block0_x = 0;
 		let block0_y = 0;
 		let block1_x = 0;
@@ -155,7 +147,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_T1(){
+	method void set_T(){
+		let rotation_offset_2x = 2;
 		let block0_x = 0;
 		let block0_y = 1;
 		let block1_x = 1;
@@ -167,43 +160,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_T2(){
-		let block0_x = 1;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;
-		let block2_x = 1;
-		let block2_y = 1;
-		let block3_x = 2;
-		let block3_y = 1;
-		return;
-	}
-
-	method void set_T3(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 1;
-		let block1_y = 0;
-		let block2_x = 1;
-		let block2_y = 1;
-		let block3_x = 2;
-		let block3_y = 0;
-		return;
-	}
-
-	method void set_T4(){
-		let block0_x = 1;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;
-		let block2_x = 1;
-		let block2_y = 1;
-		let block3_x = 1;
-		let block3_y = 2;
-		return;
-	}
-
-	method void set_L1(){
+	method void set_L(){
+		let rotation_offset_2x = 2;
 		let block0_x = 0;
 		let block0_y = 1;
 		let block1_x = 1;
@@ -215,43 +173,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_L2(){
-		let block0_x = 1;
-		let block0_y = 0;
-		let block1_x = 1;
-		let block1_y = 1;
-		let block2_x = 1;
-		let block2_y = 2;
-		let block3_x = 0;
-		let block3_y = 2;
-		return;
-	}
-
-	method void set_L3(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 1;
-		let block1_y = 0;
-		let block2_x = 0;
-		let block2_y = 1;
-		let block3_x = 0;
-		let block3_y = 2;
-		return;
-	}
-
-	method void set_L4(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;
-		let block2_x = 1;
-		let block2_y = 1;
-		let block3_x = 2;
-		let block3_y = 1;
-		return;
-	}
-
-	method void set_J1(){
+	method void set_J(){
+		let rotation_offset_2x = 2;
 		let block0_x = 0;
 		let block0_y = 0;
 		let block1_x = 1;
@@ -263,44 +186,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_J2(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 1;
-		let block1_y = 0;		
-		let block2_x = 1;
-		let block2_y = 1;		
-		let block3_x = 1;
-		let block3_y = 2;	
-		return;
-	}
-
-	method void set_J3(){
-		let block0_x = 2;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;		
-		let block2_x = 1;
-		let block2_y = 1;		
-		let block3_x = 2;
-		let block3_y = 1;	
-		return;
-	}
-
-	method void set_J4(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;		
-		let block2_x = 0;
-		let block2_y = 2;		
-		let block3_x = 1;
-		let block3_y = 2;	
-		return;
-	}
-
-
-	method void set_S1(){
+	method void set_S(){
+		let rotation_offset_2x = 2;
 		let block0_x = 0;
 		let block0_y = 0;
 		let block1_x = 1;
@@ -312,19 +199,8 @@ class Tetris{
 		return;
 	}
 
-	method void set_S2(){
-		let block0_x = 1;
-		let block0_y = 0;
-		let block1_x = 1;
-		let block1_y = 1;
-		let block2_x = 0;
-		let block2_y = 1;
-		let block3_x = 0;
-		let block3_y = 2;
-		return;
-	}
-
-	method void set_Z1(){
+	method void set_Z(){
+		let rotation_offset_2x = 2;
 		let block0_x = 1;
 		let block0_y = 0;
 		let block1_x = 2;
@@ -333,18 +209,6 @@ class Tetris{
 		let block2_y = 1;
 		let block3_x = 0;
 		let block3_y = 1;
-		return;
-	}
-
-	method void set_Z2(){
-		let block0_x = 0;
-		let block0_y = 0;
-		let block1_x = 0;
-		let block1_y = 1;
-		let block2_x = 1;
-		let block2_y = 1;
-		let block3_x = 1;
-		let block3_y = 2;
 		return;
 	}
 
@@ -390,13 +254,13 @@ class Tetris{
 		let current_y = 0;
 		let ra = Random.randRange(7);
 		//if chain pick blocks
-		if (ra = 0) {do set_I1(); }
+		if (ra = 0) {do set_I(); }
 		if (ra = 1) {do set_O(); }
-		if (ra = 2) {do set_T1(); }
-		if (ra = 3) {do set_L1(); }
-		if (ra = 4) {do set_J1(); }
-		if (ra = 5) {do set_S1(); }
-		if (ra = 6) {do set_Z1(); }
+		if (ra = 2) {do set_T(); }
+		if (ra = 3) {do set_L(); }
+		if (ra = 4) {do set_J(); }
+		if (ra = 5) {do set_S(); }
+		if (ra = 6) {do set_Z(); }
 		return;
 	}
 
@@ -496,7 +360,7 @@ class Tetris{
 		while(can_fall()){
 			let key = Keyboard.keyPressed();
 			
-			//if (key = 131) { do rotate(); }   // up arrow
+			if (key = 131 & can_rotate()) { do rotate(); }   // up arrow
 	        if ((key = 130) & can_movel()) { let current_x = current_x - 1; }   // left arrow
 	        if ((key = 132) & can_mover()) { let current_x = current_x + 1; }   // right arrow
 			
@@ -530,9 +394,71 @@ class Tetris{
 		return;
 	}
 
+	/** check the block can rotate. */
+	method boolean can_rotate(){
+		var int x;
+		var int y;
 
-	/** Rotate the block. */
+		// rotate block 0
+		let x = -block0_y + rotation_offset_2x;
+		let y = block0_x;
+		if((x < 0) | (x > f_width) | (y < 0) | (y > f_height) | is_pos_filled(x,y)){
+			return false;
+		}
+
+		// rotate block 1
+		let x = -block1_y + rotation_offset_2x;
+		let y = block1_x;
+		if((x < 0) | (x > f_width) | (y < 0) | (y > f_height) | is_pos_filled(x,y)){
+			return false;
+		}
+
+		// rotate block 2
+		let x = -block2_y + rotation_offset_2x;
+		let y = block2_x;
+		if((x < 0) | (x > f_width) | (y < 0) | (y > f_height) | is_pos_filled(x,y)){
+			return false;
+		}
+
+		// rotate block 3
+		let x = -block3_y + rotation_offset_2x;
+		let y = block3_x;
+		if((x < 0) | (x > f_width) | (y < 0) | (y > f_height) | is_pos_filled(x,y)){
+			return false;
+		}
+		
+		return true;
+	}
+
+	/** Rotate the block follow the clock. */
 	method void rotate(){
+		var int x;
+		var int y;
+
+		// rotate block 0
+		let x = block0_x;
+		let y = block0_y;
+		let block0_x = -y + rotation_offset_2x;
+		let block0_y = x;
+
+		// rotate block 1
+		let x = block1_x;
+		let y = block1_y;
+		let block1_x = -y + rotation_offset_2x;
+		let block1_y = x;
+
+		// rotate block 2
+		let x = block2_x;
+		let y = block2_y;
+		let block2_x = -y + rotation_offset_2x;
+		let block2_y = x;
+
+		// rotate block 3
+		let x = block3_x;
+		let y = block3_y;
+		let block3_x = -y + rotation_offset_2x;
+		let block3_y = x;
+
 		return;
 	}
 

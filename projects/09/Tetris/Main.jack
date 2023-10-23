@@ -2,24 +2,7 @@ class Main {
     function void main() {
         var Tetris game;
         let game = Tetris.new();
-        do game.drawFrame();
-        do game.printScore();
-        do game.set_T2();
-        //do game.draw_piece(4,1);
-        //do game.drop_block(); 
         do game.run();
-        //do game.set_O();
-        //do game.draw_piece(8,0);
-        //do game.set_O(); 
-        //do game.draw_piece(4,4);
-        //do game.set_O(); 
-        //do game.draw_piece(4,6);
-        //do game.set_O(); 
-        //do game.draw_piece(4,8);
-        //do game.set_O(); 
-        //do game.draw_piece(4,10);     
-        //do game.set_O();
-        //do game.draw_piece(4,22);
         return;
     }
 }

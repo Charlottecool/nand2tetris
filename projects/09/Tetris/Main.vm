@@ -2,15 +2,6 @@ function Main.main 1
 call Tetris.new 0
 pop local 0
 push local 0
-call Tetris.drawFrame 1
-pop temp 0
-push local 0
-call Tetris.printScore 1
-pop temp 0
-push local 0
-call Tetris.set_T2 1
-pop temp 0
-push local 0
 call Tetris.run 1
 pop temp 0
 push constant 0
