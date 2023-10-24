@@ -26,6 +26,7 @@ class Tetris{
     field int f_width; 
 
     field int rotation_offset_2x;
+    field boolean exit;
 
 	constructor Tetris new(){
 		var int i;
@@ -43,7 +44,7 @@ class Tetris{
 		let current_y = 0;
 		
 		let gameboard = Array.new(f_height*f_width);
-		
+		let exit = false;
 		let i = 0;
 		while(i < f_height){
 			
@@ -261,6 +262,23 @@ class Tetris{
 		if (ra = 4) {do set_J(); }
 		if (ra = 5) {do set_S(); }
 		if (ra = 6) {do set_Z(); }
+
+		//check if the piece overlaps any existing pieces. if so, set exit to true.
+		if (is_pos_filled(block0_x + current_x, block0_y + current_y)){
+			let exit = true;
+		}
+		if (is_pos_filled(block1_x + current_x, block1_y + current_y)){
+			let exit = true;
+		}
+		if (is_pos_filled(block2_x + current_x, block2_y + current_y)){
+			let exit = true;
+		}
+		if (is_pos_filled(block3_x + current_x, block3_y + current_y)){
+			let exit = true;
+		}
+
+		do draw_piece(current_x,current_y);
+
 		return;
 	}
 
@@ -478,13 +496,23 @@ class Tetris{
 	/**loop through whole gameboard to check and erase filled rows. */
 	method void handle_filled_rows(){
 		var int y;
+		var int delete_count;
 		let y = f_height - 1;
+		let delete_count = 0;
+
 		while((0 < y) | (y = 0)){
 			if (is_row_filled(y)){
 				do erase_row(y);
+				let score = score + 100;
+				let delete_count = delete_count + 1;
 			}
 			let y = y - 1;
 		}
+
+		if (delete_count = 4){
+			let score = score + 1000;
+		}
+
 		return;
 	}
 
@@ -510,22 +538,16 @@ class Tetris{
     /** Runs the game: handles the user's inputs and moves the block accordingly */
     method void run() {
       	var int r;
-      
-        var boolean exit;
-        let exit = false;
-
+      	do generate_piece();
         while (~exit) {
-        	do generate_piece();
         	do drop_block();
         	do save_block();
         	do handle_filled_rows();
-        	//check every row to see if it is filled (starting from the bottom)
-        	//if a row is filled
-        	//    set all values to false
-        	//    move all values above down a single row
-        	//    add something to the score
-          
-        } 
+        	do generate_piece();
+        }
+
+        do Output.moveCursor(4,12);
+		do Output.printString("Game Over! Stupid!!");
         return;
     }
 }

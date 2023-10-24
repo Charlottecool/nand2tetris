@@ -1,5 +1,5 @@
 function Tetris.new 2
-push constant 21
+push constant 22
 call Memory.alloc 1
 pop pointer 0
 push constant 24
@@ -27,6 +27,8 @@ push this 19
 call Math.multiply 2
 call Array.new 1
 pop this 17
+push constant 0
+pop this 21
 push constant 0
 pop local 0
 label WHILE_EXP0
@@ -596,6 +598,71 @@ push pointer 0
 call Tetris.set_Z 1
 pop temp 0
 label IF_FALSE6
+push pointer 0
+push this 6
+push this 15
+add
+push this 7
+push this 16
+add
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 0
+not
+pop this 21
+label IF_FALSE7
+push pointer 0
+push this 8
+push this 15
+add
+push this 9
+push this 16
+add
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push constant 0
+not
+pop this 21
+label IF_FALSE8
+push pointer 0
+push this 10
+push this 15
+add
+push this 11
+push this 16
+add
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push constant 0
+not
+pop this 21
+label IF_FALSE9
+push pointer 0
+push this 12
+push this 15
+add
+push this 13
+push this 16
+add
+call Tetris.is_pos_filled 3
+if-goto IF_TRUE10
+goto IF_FALSE10
+label IF_TRUE10
+push constant 0
+not
+pop this 21
+label IF_FALSE10
+push pointer 0
+push this 15
+push this 16
+call Tetris.draw_piece 3
+pop temp 0
 push constant 0
 return
 function Tetris.can_movel 2
@@ -1252,13 +1319,15 @@ label WHILE_END0
 push constant 0
 not
 return
-function Tetris.handle_filled_rows 1
+function Tetris.handle_filled_rows 2
 push argument 0
 pop pointer 0
 push this 18
 push constant 1
 sub
 pop local 0
+push constant 0
+pop local 1
 label WHILE_EXP0
 push constant 0
 push local 0
@@ -1279,6 +1348,14 @@ push pointer 0
 push local 0
 call Tetris.erase_row 2
 pop temp 0
+push this 0
+push constant 100
+add
+pop this 0
+push local 1
+push constant 1
+add
+pop local 1
 label IF_FALSE0
 push local 0
 push constant 1
@@ -1286,6 +1363,17 @@ sub
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
+push local 1
+push constant 4
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 0
+push constant 1000
+add
+pop this 0
+label IF_FALSE1
 push constant 0
 return
 function Tetris.erase_row 1
@@ -1350,19 +1438,17 @@ goto WHILE_EXP2
 label WHILE_END2
 push constant 0
 return
-function Tetris.run 2
+function Tetris.run 1
 push argument 0
 pop pointer 0
-push constant 0
-pop local 1
-label WHILE_EXP0
-push local 1
-not
-not
-if-goto WHILE_END0
 push pointer 0
 call Tetris.generate_piece 1
 pop temp 0
+label WHILE_EXP0
+push this 21
+not
+not
+if-goto WHILE_END0
 push pointer 0
 call Tetris.drop_block 1
 pop temp 0
@@ -1372,7 +1458,56 @@ pop temp 0
 push pointer 0
 call Tetris.handle_filled_rows 1
 pop temp 0
+push pointer 0
+call Tetris.generate_piece 1
+pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
+push constant 4
+push constant 12
+call Output.moveCursor 2
+pop temp 0
+push constant 19
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 118
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 33
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 83
+call String.appendChar 2
+push constant 116
+call String.appendChar 2
+push constant 117
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 100
+call String.appendChar 2
+push constant 33
+call String.appendChar 2
+push constant 33
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
 push constant 0
 return
