@@ -462,6 +462,51 @@ class Tetris{
 		return;
 	}
 
+	/**check every row to see if it is filled. */
+	method boolean is_row_filled(int y){
+		var int x;
+		let x = 0;
+		while(x < f_width){
+			if (~is_pos_filled(x,y)){
+				return false;
+			}
+			let x = x + 1;
+		}
+		return true;
+	}
+	
+	/**loop through whole gameboard to check and erase filled rows. */
+	method void handle_filled_rows(){
+		var int y;
+		let y = f_height - 1;
+		while((0 < y) | (y = 0)){
+			if (is_row_filled(y)){
+				do erase_row(y);
+			}
+			let y = y - 1;
+		}
+		return;
+	}
+
+	/**erase rows. */
+	method void erase_row(int y){
+		var int x;
+		while(y > 0){
+			let x = 0;
+			while(x < f_width){
+				do set_pos_state(x,y,is_pos_filled(x,y-1));
+				let x = x + 1;
+			}
+			let y = y - 1;
+		}
+		let x = 0;
+		while(x < f_width){
+			do set_pos_state(x,y,false);
+			let x = x + 1;
+		}
+		return;
+	}
+
     /** Runs the game: handles the user's inputs and moves the block accordingly */
     method void run() {
       	var int r;
@@ -473,6 +518,12 @@ class Tetris{
         	do generate_piece();
         	do drop_block();
         	do save_block();
+        	do handle_filled_rows();
+        	//check every row to see if it is filled (starting from the bottom)
+        	//if a row is filled
+        	//    set all values to false
+        	//    move all values above down a single row
+        	//    add something to the score
           
         } 
         return;

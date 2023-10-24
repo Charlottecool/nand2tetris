@@ -1221,6 +1221,135 @@ push local 0
 pop this 13
 push constant 0
 return
+function Tetris.is_row_filled 1
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 19
+lt
+not
+if-goto WHILE_END0
+push pointer 0
+push local 0
+push argument 1
+call Tetris.is_pos_filled 3
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+not
+return
+function Tetris.handle_filled_rows 1
+push argument 0
+pop pointer 0
+push this 18
+push constant 1
+sub
+pop local 0
+label WHILE_EXP0
+push constant 0
+push local 0
+lt
+push local 0
+push constant 0
+eq
+or
+not
+if-goto WHILE_END0
+push pointer 0
+push local 0
+call Tetris.is_row_filled 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+push local 0
+call Tetris.erase_row 2
+pop temp 0
+label IF_FALSE0
+push local 0
+push constant 1
+sub
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Tetris.erase_row 1
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push argument 1
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push constant 0
+pop local 0
+label WHILE_EXP1
+push local 0
+push this 19
+lt
+not
+if-goto WHILE_END1
+push pointer 0
+push local 0
+push argument 1
+push pointer 0
+push local 0
+push argument 1
+push constant 1
+sub
+call Tetris.is_pos_filled 3
+call Tetris.set_pos_state 4
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP1
+label WHILE_END1
+push argument 1
+push constant 1
+sub
+pop argument 1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+pop local 0
+label WHILE_EXP2
+push local 0
+push this 19
+lt
+not
+if-goto WHILE_END2
+push pointer 0
+push local 0
+push argument 1
+push constant 0
+call Tetris.set_pos_state 4
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP2
+label WHILE_END2
+push constant 0
+return
 function Tetris.run 2
 push argument 0
 pop pointer 0
@@ -1239,6 +1368,9 @@ call Tetris.drop_block 1
 pop temp 0
 push pointer 0
 call Tetris.save_block 1
+pop temp 0
+push pointer 0
+call Tetris.handle_filled_rows 1
 pop temp 0
 goto WHILE_EXP0
 label WHILE_END0
