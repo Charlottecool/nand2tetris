@@ -15,13 +15,15 @@ def main():
 
     text_ref = Ref(raw_text)
 
-    print(text_ref)
-
+    print('text_ref=',text_ref)
+    print(type(text_ref))
 
     root = XML('tokens', [])
 
     while len(text_ref.value) > 0:
         if eat_singlelinecomment(text_ref):
+            continue
+        if eat_blockcomment(text_ref):
             continue
         if eat_whitespace(text_ref):
             #don't add whitespace to xml. just skip it
@@ -33,6 +35,12 @@ def main():
             root.append(result)
             continue
         if (result := eat_identifier(text_ref)) is not None:
+            root.append(result)
+            continue
+        if (result := eat_integerConstant(text_ref)) is not None:
+            root.append(result)
+            continue
+        if (result := eat_StringConstant(text_ref)) is not None:
             root.append(result)
             continue
         #other eat functions for other tokens
@@ -53,22 +61,10 @@ def main():
 
     # filepath = Path(sys.argv[1])
 
-
-    # def hasMoreTokens(): #Do we have more tokens in the input?
-    #   if hasmoretokens:
-    #       return True
-    #   return False
-
-    # def advance(): #Gets the next token from the input and makes it the current token.
-    #   pass
-    #   return
-
-    # def num_there(s): #check if any number in a string
-    #     return any(i.isdigit() for i in s)
-
     # def get_string(string): #get substring from a line
     #   s = string.split('"')
     #   return s[1]
+
     # def keyword(l):
     #   for i in l:
     #       if 'class' or 'constructor' or 'function' or 'method' or 'field' or 'static' or 'var' or 'int' or 'char' or 'boolean' or 'void' or 'true' or 'false' or 'null' or 'this' or 'let' or 'do' or 'if' or 'else' or 'while' or 'return' in i:
@@ -130,17 +126,34 @@ def eat_identifier(string_ref:Ref[str]) -> XML|None:
 def eat_singlelinecomment(string_ref:Ref[str])-> bool|None: #get rid of all // lines
     if not string_ref.value.startswith('//'):
         return None
-    lines = string_ref.value.split('\n')
-    comment = lines[0]
-    string_ref.value = string_ref.value[len(comment) + 1:]
+    lines = string_ref.value.split('\n',1)
+    string_ref.value = lines[1]
     return True
 
+def eat_blockcomment(string_ref:Ref[str])-> bool|None: #get rid of all /** lines
+    if not string_ref.value.startswith('/*') :
+        return None
+    lines = string_ref.value.split('*/',1)
+    string_ref.value = lines[1]
+    return True
+   
+def eat_integerConstant(string_ref:Ref[str])-> bool|None: #eat all the integers
+    i = 0
+    while i < len(string_ref.value) and string_ref.value[i].isdigit():
+        i += 1
+    if i == 0:
+        return None
+    integer = string_ref.value[:i]
+    string_ref.value = string_ref.value[i:]
+    return XML('integerConstant', [integer])
 
-
-def eat_blockcomment(string_ref:Ref[str])-> bool|None:
-    ... #if
-
-
+def eat_StringConstant(string_ref:Ref[str])-> bool|None: #eat all the strings
+    if not string_ref.value.startswith('"'):
+        return None
+    strings = string_ref.value.split('"',2)
+    string_ref.value = strings[2]
+    string = strings[1]
+    return XML('StringConstant', [string])
 
 if __name__ == '__main__':
     main()

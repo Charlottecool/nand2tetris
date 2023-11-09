@@ -1,4 +1,6 @@
 // (identical to projects/09/Average/Main.jack)
 
-// Computes the average of a sequence of integers. */
+/** Computes the average of a sequence of integers. */
 class Main {
+let length = Keyboard.readInt("HOW MANY NUMBERS? ");
+let i = i + 123;
