@@ -3,7 +3,7 @@ from pathlib import Path
 from utils import XML, Ref
 
 
-def main(tokenizer_file:Path):
+def tokenize(tokenizer_file:Path):
     
 
     print(f'tokenizer_file:{tokenizer_file}')
@@ -11,16 +11,8 @@ def main(tokenizer_file:Path):
     # with open(tokenizer_file,'r') as f:
     #   s = f.read()
     raw_text = Path(tokenizer_file).read_text()
-    #print(raw_text)
-
-
     text_ref = Ref(raw_text)
-
-    # print('text_ref=',text_ref)
-    # print(type(text_ref))
-
     root = XML('tokens', [])
-
 
     while len(text_ref.value) > 0:
         if eat_singlelinecomment(text_ref):
@@ -45,51 +37,16 @@ def main(tokenizer_file:Path):
         if (result := eat_StringConstant(text_ref)) is not None:
             root.append_child(result)
             continue
-        #other eat functions for other tokens
+        
+        #debug
         import pdb;pdb.set_trace()
 
         raise Exception(f'failed to eat any tokens this time. remaining text: "{text_ref.value}"')
 
+    #save the file
     b = tokenizer_file.with_stem('_' + tokenizer_file.stem + 'T').with_suffix('.xml')
     f = str(root)
     b.write_text(f)
-
-
-
-
-
-
-
-
-
-
-
-    # filepath = Path(sys.argv[1])
-
-    # def get_string(string): #get substring from a line
-    #   s = string.split('"')
-    #   return s[1]
-
-    # def keyword(l):
-    #   for i in l:
-    #       if 'class' or 'constructor' or 'function' or 'method' or 'field' or 'static' or 'var' or 'int' or 'char' or 'boolean' or 'void' or 'true' or 'false' or 'null' or 'this' or 'let' or 'do' or 'if' or 'else' or 'while' or 'return' in i:
-    #       return ('<keyword>',i,'</keyword>')
-    #????def tokenType(list): #Returns the type of the current token.
-    # for i in or_s:
-    #   i = keyword(i)
-    #   if '{' or '}' or '(' or ')' or '[' or ']' or '.' or ',' or ';' or '+' or '-' or '*' or '/' or '&' or '|' or '<' or '>' or '=' or '~' in i:
-    #       print('symbol')
-    #       #return SYMBOL
-    #   if num_there(i) is True:
-    #       print('int_const')
-    #       #return INT_CONST
-    #   if '"' in i:
-    #       print('string_const')
-    #       #return STRING_CONST
-    #   else: 
-    #       print('identifier')
-    #       #return
-    # print(or_s)
 
 keywords = {'class', 'constructor', 'function', 'method', 'field', 'static', 'var', 'int', 'char', 'boolean', 'void', 'true', 'false', 'null', 'this', 'let', 'do', 'if', 'else', 'while', 'return'}
 def eat_keyword(string_ref:Ref[str]) -> XML|None:
@@ -118,7 +75,6 @@ def eat_identifier(string_ref:Ref[str]) -> XML|None:
     if string_ref.value[0].isdigit():
         return None
     
-    # "apple"
     i = 0
     while i < len(string_ref.value) and (string_ref.value[i].isalnum() or string_ref.value.startswith('_')):
         i += 1
@@ -158,12 +114,14 @@ def eat_StringConstant(string_ref:Ref[str])-> bool|None: #eat all the strings
     strings = string_ref.value.split('"',2)
     string_ref.value = strings[2]
     string = strings[1]
-    return XML('StringConstant', [string])
+    return XML('stringConstant', [string])
 
-if __name__ == '__main__':
-    tokenizer_path = Path(sys.argv[1])
-    if tokenizer_path.is_file() and tokenizer_path.suffix == '.jack':
-        main(tokenizer_path)
-    elif tokenizer_path.is_dir():
-        for each in tokenizer_path.glob('*.jack'):
-            main(each)
+import subprocess
+def check_tokenizer(path:Path):
+    my_xml = path.with_stem('_' + path.stem + 'T').with_suffix('.xml')
+    their_xml = path.with_stem(path.stem + 'T').with_suffix('.xml')
+
+    print(f'comparing {their_xml} to {my_xml}')
+    res = subprocess.run(['bash', '../../tools/TextComparer.sh', their_xml, my_xml])
+
+
