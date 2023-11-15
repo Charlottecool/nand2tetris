@@ -11,14 +11,14 @@ class XML:
     tag:str
     children:list['XML|str']
 
-    def append(self, child:'XML|str'): 
+    def append_child(self, child:'XML|str'): 
         self.children.append(child)
     
     def __str__(self, depth=0):
         tab = "    "
 
         if len(self.children) == 0:
-            return f"{tab*depth}<{self.tag}> </{self.tag}>\n"
+            return f"{tab*depth}<{self.tag}>\n{tab*depth}</{self.tag}>\n"
         elif len(self.children) == 1 and isinstance(self.children[0], str):
             return f"{tab*depth}<{self.tag}> {XML.escape(self.children[0])} </{self.tag}>\n"
 
@@ -47,7 +47,7 @@ class XML:
         return s.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
     
     @staticmethod
-    def from_str(src:str) -> 'XML':
+    def from_string(src:str) -> 'XML':
         
         def eat_whitespace(src:Ref[str]) -> str|None:
             i = 0
@@ -100,12 +100,12 @@ class XML:
 
             if (tag := eat_opening_tag(src)) is not None:
                 xml = XML(tag, [])
-                stack[-1].append(xml)
+                stack[-1].append_child(xml)
                 stack.append(xml)
                 continue
             
             if (text := eat_text(src)) is not None:
-                stack[-1].append(text)
+                stack[-1].append_child(text)
                 continue
 
             assert False, f"Invalid XML: {src.value}"
@@ -123,56 +123,30 @@ class XML:
 
 def main():
     from pathlib import Path
-    import sys
+    import pdb
+    test = Path("ArrayTest/Main.xml").read_text()
+    test = XML.from_string(test)
 
-    tokenizer_file = sys.argv[1]
-    raw_text = Path(tokenizer_file).read_text()
-    print(raw_text)
-    exit(1)
-
-    
-    # # define a bunch of identification functions
-    # def key_class(string):
-    #     if i see 'class' in this string:
-    #         return XML('keyword', ['class'])
-    # def symbol_cehbf(string):
-    #     ...
+    pdb.set_trace()
 
 
+    test = XML('tokens', [
+        XML("keyword", ["if"]),
+        XML("symbol", ["("]),
+        XML("identifier", ["x"]),
+        XML("symbol", ["<"]),
+        XML("integerConstant", ["0"]),
+        XML("symbol", [")"]),
+        XML("symbol", ["{"]),
+        XML("keyword", ["let"]),
+        XML("identifier", ["sign"]),
+        XML("symbol", ["="]),
+        XML("stringConstant", ["negative"]),
+        XML("symbol", [";"]),
+        XML("symbol", ["}"])
+    ])
 
-    # if (result := key_class()) is not None:
-    # equals
-    # result = key_class()
-    # if result is not None:
-    
-
-    root = XML('tokens', [])
-    
-
-    if (result := key_class()) is not None:
-        root.append(result)
-    if (result := symbol_cehbf()) is not None:
-        root.append(result)
-
-    
-
-    # test = XML('tokens', [
-    #     XML("keyword", ["if"]),
-    #     XML("symbol", ["("]),
-    #     XML("identifier", ["x"]),
-    #     XML("symbol", ["<"]),
-    #     XML("integerConstant", ["0"]),
-    #     XML("symbol", [")"]),
-    #     XML("symbol", ["{"]),
-    #     XML("keyword", ["let"]),
-    #     XML("identifier", ["sign"]),
-    #     XML("symbol", ["="]),
-    #     XML("stringConstant", ["negative"]),
-    #     XML("symbol", [";"]),
-    #     XML("symbol", ["}"])
-    # ])
-
-    # print(test)
+    print(test)
 
 
 if __name__ == "__main__":
