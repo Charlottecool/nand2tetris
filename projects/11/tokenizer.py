@@ -2,146 +2,128 @@ from pathlib import Path
 from utils import Ref
 from dataclasses import dataclass
 
+import pdb
+
+keywords = {
+    "class", "constructor", "function", "method", "field", "static", "var",
+    "int", "char", "boolean", "void", "true", "false", "null", "this", "let",
+    "do", "if", "else", "while", "return"
+}
+
+symbols = {*"{}()[].,;+-*/&|<>=~"}
 
 @dataclass
 class Token:
     type: str
     value: str
 
-def tokenize(tokenizer_file:Path) -> list[Token]:
-    
-    print(f'tokenizer_file:{tokenizer_file}')
+def tokenize(inpath: Path) -> list[Token]:
+    src = Ref(inpath.read_text())
+    tokens: list[Token] = []
 
-    raw_text = Path(tokenizer_file).read_text()
-    text_ref = Ref(raw_text)
-    # root = XML('tokens', [])
-    tokens = []
+    while len(src.value) > 0:
+        if eat_comments(src):
+            continue
+        if eat_whitespace(src):
+            continue
+        if eat_keyword(src, tokens):
+            continue
+        if eat_symbol(src, tokens):
+            continue
+        if eat_integerConstant(src, tokens):
+            continue
+        if eat_StringConstant(src, tokens):
+            continue
+        if eat_identifier(src, tokens):
+            continue
 
-    while len(text_ref.value) > 0:
-        if eat_singlelinecomment(text_ref):
-            continue
-        if eat_blockcomment(text_ref):
-            continue
-        if eat_whitespace(text_ref):
-            #don't add whitespace to xml. just skip it
-            continue
-        if (result := eat_keyword(text_ref)) is not None:
-            tokens.append(result)
-            continue
-        if (result := eat_symbol(text_ref)) is not None:
-            tokens.append(result)
-            continue
-        if (result := eat_identifier(text_ref)) is not None:
-            tokens.append(result)
-            continue
-        if (result := eat_integerConstant(text_ref)) is not None:
-            tokens.append(result)
-            continue
-        if (result := eat_StringConstant(text_ref)) is not None:
-            tokens.append(result)
-            continue
-        
-        #debug
-        import pdb;pdb.set_trace()
+        pdb.set_trace()
+        raise Exception(f"Invalid token: '{src.value}'")
 
-        raise Exception(f'failed to eat any tokens this time. remaining text: "{text_ref.value}"')
-
-    #save the file
-    # b = tokenizer_file.with_stem('_' + tokenizer_file.stem + 'T').with_suffix('.xml')
-    # f = str(rt)
-    # b.write_text(f)
     return tokens
 
-keywords = {'class', 'constructor', 'function', 'method', 'field', 'static', 'var', 'int', 'char', 'boolean', 'void', 'true', 'false', 'null', 'this', 'let', 'do', 'if', 'else', 'while', 'return'}
-def eat_keyword(string_ref:Ref[str]) -> Token|None:
+def eat_keyword(src:Ref[str], tokens:list[Token]) -> bool:
     for keyword in keywords:
-        if string_ref.value.startswith(keyword) and (len(string_ref.value) == len(keyword) or not string_ref.value[len(keyword)].isalnum()):
-            #update the string to get rid of the keyword from the start of it
-            string_ref.value = string_ref.value[len(keyword):]
-            #return the xml object for that keyword
-            # return XML('keyword', [keyword])
-            return Token('keyword', keyword)
-
-def eat_whitespace(string_ref:Ref[str]) -> bool|None:
-    if string_ref.value.startswith(' ') or string_ref.value.startswith('\n') or string_ref.value.startswith('\t'):
-        string_ref.value = string_ref.value[1:]
-        return not None
-
-symbols = {'{', '}', '(', ')', '[', ']', '.', ',', ';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~'}
-def eat_symbol(string_ref:Ref[str]) -> Token|None:
-    for symbol in symbols:
-        if string_ref.value.startswith(symbol):
-            #update the string to get rid of the symbol from the start of it
-            string_ref.value = string_ref.value[len(symbol):]
-            #return the xml object for that keyword
-            # return XML('symbol', [symbol])
-            return Token('symbol', symbol)
-
-def eat_identifier(string_ref:Ref[str]) -> Token|None:
-    if string_ref.value[0].isdigit():
-        return None
-    
-    i = 0
-    while i < len(string_ref.value) and (string_ref.value[i].isalnum() or string_ref.value.startswith('_')):
-        i += 1
-    if i == 0:
-        return None
-    identifier = string_ref.value[:i]
-    string_ref.value = string_ref.value[i:]
-    # return XML('identifier', [identifier])
-    return Token('identifier', identifier)
-
-def eat_singlelinecomment(string_ref:Ref[str])-> bool|None: #get rid of all // lines
-    if not string_ref.value.startswith('//'):
-        return None
-    lines = string_ref.value.split('\n',1)
-    string_ref.value = lines[1]
-    return True
-
-def eat_blockcomment(string_ref:Ref[str])-> bool|None: #get rid of all /** lines
-    if not string_ref.value.startswith('/*') :
-        return None
-    lines = string_ref.value.split('*/',1)
-    string_ref.value = lines[1]
-    return True
-   
-def eat_integerConstant(string_ref:Ref[str])-> Token|None: #eat all the integers
-    i = 0
-    while i < len(string_ref.value) and string_ref.value[i].isdigit():
-        i += 1
-    if i == 0:
-        return None
-    integer = string_ref.value[:i]
-    string_ref.value = string_ref.value[i:]
-    return Token('integerConstant', integer)
-
-def eat_StringConstant(string_ref:Ref[str])-> Token|None: #eat all the strings
-    if not string_ref.value.startswith('"'):
-        return None
-    strings = string_ref.value.split('"',2)
-    string_ref.value = strings[2]
-    string = strings[1]
-    return Token('stringConstant', string)
-
-# import subprocess
-# def check_tokenizer(path:Path):
-#     my_xml = path.with_stem('_' + path.stem + 'T').with_suffix('.xml')
-#     their_xml = path.with_stem(path.stem + 'T').with_suffix('.xml')
-
-#     print(f'comparing {their_xml} to {my_xml}')
-#     res = subprocess.run(['bash', '../../tools/TextComparer.sh', their_xml, my_xml])
+        if src.value.startswith(keyword) and (len(src.value) == len(keyword) or not src.value[len(keyword)].isalnum()):
+            tokens.append(Token("keyword",keyword))
+            src.value = src.value[len(keyword):]
+            return True
+    return False
 
 
+def eat_symbol(src:Ref[str], tokens:list[Token]) -> bool:
+    if src.value[0] in symbols:
+        tokens.append(Token("symbol",src.value[0]))
+        src.value = src.value[1:]
+        return True
+    return False
 
 
-if __name__ == '__main__':
-    # path = Path('Average')
-    # path = Path('ComplexArrays')
-    # path = Path('ConvertToBin')
-    # path = Path('Pong')
-    # path = Path('Seven')
-    path = Path('Square')
+def eat_integerConstant(src:Ref[str],tokens: list[Token])-> bool: 
+    if src.value[0].isdigit():
+        i = 1
+        while i < len(src.value) and src.value[i].isdigit():
+            i += 1
+        tokens.append(Token("integerConstant",src.value[:i]))
+        src.value = src.value[i:]
+        return True
+    return False
 
-    for file in path.glob('*.jack'):
-        tokens = tokenize(file)
-        print(f'{tokens=}')
+
+def eat_StringConstant(src:Ref[str],tokens:list[Token])-> bool: 
+    if src.value[0] == '"':
+        i = 1
+        while i < len(src.value) and src.value[i] != '"':
+            i += 1
+        tokens.append(Token("stringConstant",src.value[1:i]))
+        src.value = src.value[i+1:]
+        return True
+    return False
+
+
+def eat_identifier(src:Ref[str],tokens:list[Token])-> bool: 
+    if src.value[0].isalpha() or src.value[0] == '_':
+        i = 1
+        while i < len(src.value) and (src.value[i].isalnum() or src.value[i] == '_'):
+            i += 1
+        if src.value[:i] in keywords:
+            return False #keywords are not identifiers
+
+        tokens.append(Token("identifier",src.value[:i]))
+        src.value = src.value[i:]
+        return True
+    return False
+
+
+def eat_whitespace(src:Ref[str]) -> bool:
+    if src.value[0].isspace():
+        i = 1
+        while i < len(src.value) and src.value[i].isspace():
+            i += 1
+        src.value = src.value[i:]
+        return True
+    return False
+
+
+def eat_comments(src:Ref[str])-> bool:
+    if src.value.startswith('//'):
+        i = 2
+        while i < len(src.value) and src.value[i] != "\n":
+            i += 1
+        src.value = src.value[i:]
+        return True
+    if src.value.startswith("/*"):
+        i = 2
+        while i < len(src.value) and not src.value[i:].startswith("*/"):
+            i += 1
+        assert src.value[i:].startswith("*/"),"Unclosed comment"
+        src.value = src.value[i+2:]
+        return True
+    return False
+
+
+
+# simple test
+if __name__ == "__main__":
+    tokens = tokenize(Path('ComplexArrays/Main.jack'))
+    print(tokens)
