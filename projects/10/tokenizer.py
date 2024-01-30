@@ -1,15 +1,11 @@
-import sys
 from pathlib import Path
 from utils import XML, Ref
 
 
 def tokenize(tokenizer_file:Path):
     
-
     print(f'tokenizer_file:{tokenizer_file}')
 
-    # with open(tokenizer_file,'r') as f:
-    #   s = f.read()
     raw_text = Path(tokenizer_file).read_text()
     text_ref = Ref(raw_text)
     root = XML('tokens', [])
