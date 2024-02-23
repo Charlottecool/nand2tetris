@@ -8,13 +8,37 @@
  * Note: Jack compilers implement multiplication and division using OS method calls.
  */
 class Math {
+    static Array twotothe;
 
     /** Initializes the library. */
     function void init() {
+        var int i;
+        let twotothe = Array.new(16);
+
+        let twotothe[0] = 1;
+        let i = 1;
+        while(i < 16){
+            let twotothe[i] = twotothe[i-1] + twotothe[i-1];
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        if(x < 0) {
+            let x = -x;
+        }
+        return x;
+    }
+
+    //twotothe = [000001, 000010, 000100, 001000, 010000, 100000]
+    //x = 100111011
+    //i = 5
+    //(x & twotothe[i] = 0100000) > 0
+    /** Returns true if the i-th bit of x is 1, false otherwise. */
+    function boolean bit(int x, int i) {
+        return (x & twotothe[i]) > 0;
     }
 
     /** Returns the product of x and y. 
@@ -23,6 +47,37 @@ class Math {
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
     function int multiply(int x, int y) {
+        var int shiftedX;
+        var int sum, i;
+        var boolean pos;
+
+        // keep track of sign of result (not allowed to use multiplication here)
+        let pos = (((x > 0) | (x = 0)) & ((y > 0) | (y = 0))) | ((x < 0) & (y < 0));
+        let x = Math.abs(x);
+        let y = Math.abs(y);
+
+        let shiftedX = x;
+        let sum = 0;
+        let i = 0;
+        while(i < 16){
+            if (Math.bit(y,i)) {
+                let sum = sum + shiftedX;
+            }
+            let shiftedX = shiftedX + shiftedX;
+            let i = i + 1;
+        }
+        if (pos) {
+            return sum;
+        } else {
+            return -sum;
+        }
+    }
+
+    function int sign(int x) {
+        if (x < 0) {
+            return -1;
+        }
+        return 1;
     }
 
     /** Returns the integer part of x/y.
@@ -31,17 +86,52 @@ class Math {
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
     function int divide(int x, int y) {
+        var int q, sign;
+
+        let sign = Math.sign(x) * Math.sign(y);
+        let x = Math.abs(x);
+        let y = Math.abs(y);
+
+        if ((y > x) | (y < 0)){
+            return 0;
+        }
+        let q = Math.divide(x, 2 * y);
+        if ((x - (2 * q * y)) < y){
+            return sign * q * 2;
+        } else {
+            return ((2*q) + 1) * sign;
+        }
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int i, y, test, test2;
+        let i = 8; // 2^(16/2). sqrt(2^16) = 2^8
+        let y = 0;
+        while ((i > 0) | (i = 0)) {
+            let test = y + twotothe[i];
+            let test2 = test * test;
+            if (((test2 < x) | (test2 = x)) & (test2 > 0)) {
+                let y = test;
+            }
+            let i = i - 1;
+        }
+        return y;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if(a < b) {
+            return b;
+        }
+        return a;    
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if(a < b) {
+            return a;
+        }
+        return b; 
     }
 }

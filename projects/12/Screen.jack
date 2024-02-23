@@ -11,33 +11,170 @@
  */
 class Screen {
 
+    static boolean color;
+    static Array screen;
+    static Array twotothe;
+
     /** Initializes the Screen. */
     function void init() {
+        var int i;
+        let screen = 16384;
+        let color = true;
+        let twotothe = Array.new(16);
+
+        let twotothe[0] = 1;
+        let i = 1;
+        while(i < 16){
+            let twotothe[i] = twotothe[i-1] + twotothe[i-1];
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Erases the entire screen. */
     function void clearScreen() {
+        var int i;
+        let i = 0;
+        while(i < 8192){
+            let screen[i] = 0;
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Sets the current color, to be used for all subsequent drawXXX commands.
      *  Black is represented by true, white by false. */
     function void setColor(boolean b) {
+        let color = b;
+        return;
     }
 
     /** Draws the (x,y) pixel, using the current color. */
     function void drawPixel(int x, int y) {
+        var int address, value, bitIndex, bitValue;
+        //address = 32*y+x/16;
+        let bitIndex = x & 15;
+        let address = (32 * y) + (x / 16);
+    
+        let value = screen[address];
+        //set the (x%16)th bit of value to the correct color
+        let bitValue = twotothe[bitIndex];
+        if (color) {
+            let value = value | bitValue;//if the color is true; should use '&' on the oppsite
+        } else {
+            let value = value & (~bitValue);
+        }
+    
+        let screen[address]  = value;
+        return;
     }
 
     /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
     function void drawLine(int x1, int y1, int x2, int y2) {
+        var int dx, dy, stepx, stepy, fraction, x, y;
+
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        
+        //decide direction to move forward
+        if (dy < 0){
+            let dy = -dy;
+            let stepy = -1;
+        } else {
+            let stepy = 1;
+        }
+
+        if (dx < 0){
+            let dx = -dx;
+            let stepx = -1;
+        } else {
+            let stepx = 1;
+        }
+
+        let dx = dx * 2;
+        let dy = dy * 2;
+
+        //draw starting point
+        do Screen.drawPixel(x1,y1);
+
+        //horizontal lines
+        if (dy = 0){
+            let x = x1;
+            if(stepx > 0){
+                while((x<x2)|(x=x2)){
+                    do Screen.drawPixel(x,y1);
+                    let x = x + stepx;
+                }
+            } else{
+                while ((x>x2)|(x = x2)){
+                    do Screen.drawPixel(x,y1);
+                    let x = x + stepx;
+                }
+            }
+        }
+
+        //vertical lines
+        if (dx = 0){
+            let y = y1;
+            if (stepy > 0){
+                while ((y<y2)|(y=y2)){
+                    do Screen.drawPixel(x1,y);
+                    let y = y + stepy;
+                }
+            } else {
+                while ((y>y2)|(y = y2)){
+                    do Screen.drawPixel(x1,y);
+                    let y = y + stepy;
+                }            
+            }
+        }
+
+        if(dx > dy){
+            let fraction = dy - (dx / 2);
+            while (~(x1 = x2)){
+                if ((fraction > 0) | (fraction = 0)){
+                    let y1 = y1 + stepy;
+                    let fraction = fraction - dx;
+                }
+                let x1 = x1 + stepx;
+                let fraction = fraction + dy;
+                do Screen.drawPixel(x1, y1);
+            }
+        } else {
+            let fraction = dx - (dy / 2);
+            while (~(y1 = y2)){
+                if ((fraction > 0) | (fraction = 0)){
+                    let x1 = x1 + stepx;
+                    let fraction = fraction - dy;
+                }
+                let y1 = y1 + stepy;
+                let fraction = fraction + dx;
+                do Screen.drawPixel(x1,y1);
+            }
+        }
+        return;
     }
 
     /** Draws a filled rectangle whose top left corner is (x1, y1)
      * and bottom right corner is (x2,y2), using the current color. */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
+        while(~(y2=y1)){
+            do Screen.drawLine(x1,y1,x2,y1);
+            let y1 = y1 + 1;
+        }
+        return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+        //dx = x2-x1, dy = y2-y1
+        var int dy;
+        let dy = -r;
+        //for each dy = -r to r
+        while ((dy < r) | (dy = r) & (r < 181)){
+            do Screen.drawLine(x - Math.sqrt((r*r)-(dy*dy)), y + dy, x + Math.sqrt((r*r)-(dy*dy)), y + dy);
+            let dy = dy + 1;
+        }    
+        return;
     }
 }
